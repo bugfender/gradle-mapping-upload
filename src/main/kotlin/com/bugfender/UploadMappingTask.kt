@@ -7,6 +7,7 @@ import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.RequestBody.Companion.asRequestBody
 import org.gradle.api.DefaultTask
+import org.gradle.api.GradleException
 import org.gradle.api.internal.provider.MissingValueException
 import org.gradle.api.tasks.Internal
 import org.gradle.api.tasks.TaskAction
@@ -28,7 +29,7 @@ abstract class UploadMappingTask : DefaultTask() {
 
             val url = config.apiURL.get()
             requestBuilder = Request.Builder()
-                .url("${url}${if (url.last() == '/') "" else "/"}api/upload_symbols")
+                .url("${url}${if (url.last() == '/') "" else "/"}api/upload-symbols")
                 .header("Authorization", "Bearer ${config.apiKey.get()}")
 
             return {
@@ -71,11 +72,13 @@ abstract class UploadMappingTask : DefaultTask() {
                         response.message,
                         body?.string() ?: "",
                     )
+                    throw GradleException("Server returned an error")
                 }
                 body?.close()
             }
         } catch (exc: Exception) {
             this.logger.error("Error sending mapping file", exc)
+            throw GradleException("Error connecting to the server")
         }
     }
 }

@@ -15,6 +15,6 @@ abstract class UploadMappingPluginExtension {
     }
 
     init {
-        this.apiURL.convention("https://api.bugfender.com")
+        this.apiURL.convention("https://dashboard.bugfender.com")
     }
 }

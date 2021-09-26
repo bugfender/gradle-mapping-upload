@@ -48,7 +48,7 @@ class UploadMappingTaskTest {
 
         val req = webserver.takeRequest()
         assertEquals("POST", req.method)
-        assertEquals("/api/upload_symbols", req.path)
+        assertEquals("/api/upload-symbols", req.path)
         assertFormData(req.body.readUtf8())
 
         webserver.shutdown()
