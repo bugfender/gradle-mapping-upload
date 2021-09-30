@@ -5,7 +5,7 @@ plugins {
 }
 
 group 'com.bugfender'
-version '1.0.0'
+version '1.0.1'
 
 compileKotlin {
     sourceCompatibility = JavaVersion.VERSION_1_8
