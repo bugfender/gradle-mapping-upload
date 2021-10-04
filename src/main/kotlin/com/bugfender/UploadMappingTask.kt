@@ -23,14 +23,14 @@ abstract class UploadMappingTask : DefaultTask() {
             variant: ApplicationVariant,
             config: UploadMappingPluginExtension
         ): UploadMappingTask.() -> Unit {
-            if (!config.apiKey.isPresent) {
-                throw Exception("Missing apiKey in configuration")
+            if (!config.symbolicationToken.isPresent) {
+                throw Exception("Missing symbolicationToken in configuration")
             }
 
-            val url = config.apiURL.get()
+            val url = config.symbolicationURL.get()
             requestBuilder = Request.Builder()
                 .url("${url}${if (url.last() == '/') "" else "/"}api/upload-symbols")
-                .header("Authorization", "Bearer ${config.apiKey.get()}")
+                .header("Authorization", "Bearer ${config.symbolicationToken.get()}")
 
             return {
                 this.variant = variant

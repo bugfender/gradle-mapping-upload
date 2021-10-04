@@ -7,15 +7,15 @@ Used to automatically upload ProGuard mapping files to [Bugfender](https://bugfe
 
 *Note:* The plugin requires `com.android.tools.build:gradle` in version at least `4.1` to work properly.
 
-Add the plugin to your app `build.gradle` file and configure it with the Symbols Upload Token, obtained from your Bugfender dashboard.
+Add the plugin to your *app* `build.gradle` file and configure it with the Symbols Upload Token, obtained from your Bugfender dashboard.
 
 ```
 plugins {
-    id "com.bugfender.upload-mapping" version "1.0.0"
+    id "com.bugfender.upload-mapping" version "1.0.2"
 }
 
 bugfender {
-    apiKey "<your_token_here>"
+    symbolicationToken "<your_token_here>"
 }
 ```
 

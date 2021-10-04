@@ -35,9 +35,9 @@ class UploadMappingTaskTest {
         val url = webserver.url("")
 
         val config = project.extensions.create("bugfender", UploadMappingPluginExtension::class.java)
-        config.apiKey("00009999111133332222444455556666")
+        config.symbolicationToken("00009999111133332222444455556666")
         println(url.toString())
-        config.apiURL(url.toString())
+        config.symbolicationURL(url.toString())
 
         val task = project.tasks.register(
             "bfUploadMappingTest",
@@ -70,12 +70,12 @@ class UploadMappingTaskTest {
     }
 
     @Test
-    fun missingApiKey(@MockK variant: ApplicationVariant) {
+    fun missingsymbolicationToken(@MockK variant: ApplicationVariant) {
         val config = project.extensions.create("bugfender", UploadMappingPluginExtension::class.java)
 
         val exc = assertThrows<Exception>("Should throw exception on missing API key") {
             UploadMappingTask.constructor(variant, config)
         }
-        assertEquals("Missing apiKey in configuration", exc.message)
+        assertEquals("Missing symbolicationToken in configuration", exc.message)
     }
 }

@@ -3,18 +3,18 @@ package com.bugfender
 import org.gradle.api.provider.Property
 
 abstract class UploadMappingPluginExtension {
-    abstract val apiURL: Property<String>
-    abstract val apiKey: Property<String>
+    abstract val symbolicationURL: Property<String>
+    abstract val symbolicationToken: Property<String>
 
-    fun apiURL(apiURL: String) {
-        this.apiURL.set(apiURL)
+    fun symbolicationURL(symbolicationURL: String) {
+        this.symbolicationURL.set(symbolicationURL)
     }
 
-    fun apiKey(apiKey: String) {
-        this.apiKey.set(apiKey)
+    fun symbolicationToken(symbolicationToken: String) {
+        this.symbolicationToken.set(symbolicationToken)
     }
 
     init {
-        this.apiURL.convention("https://dashboard.bugfender.com")
+        this.symbolicationURL.convention("https://dashboard.bugfender.com")
     }
 }
