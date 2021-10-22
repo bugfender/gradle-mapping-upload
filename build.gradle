@@ -55,7 +55,7 @@ pluginBundle {
     tags = ['bugfender','mapping','logger','crash-report']
 
     plugins {
-        greetingsPlugin {
+        uploadMappingPlugin {
             // id is captured from java-gradle-plugin configuration
             displayName = 'Bugfender Android plugin'
         }
