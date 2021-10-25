@@ -1,7 +1,12 @@
 plugins {
     id 'java-gradle-plugin'
     id 'org.jetbrains.kotlin.jvm' version '1.5.30'
-    id 'maven-publish'
+    id "com.gradle.plugin-publish" version "0.16.0" // For publishing on https://plugins.gradle.org/ -> use publishPlugins task
+    id 'maven-publish' // For publishing on local maven repository (for development purposes) -> use publishToMavenLocal task
+}
+
+repositories {
+    mavenCentral()
 }
 
 group 'com.bugfender'
@@ -39,6 +44,20 @@ gradlePlugin {
         uploadMappingPlugin {
             id = "com.bugfender.upload-mapping"
             implementationClass = "com.bugfender.UploadMappingPlugin"
+        }
+    }
+}
+
+pluginBundle {
+    website = 'https://github.com/bugfender/gradle-mapping-upload'
+    vcsUrl = 'https://github.com/bugfender/gradle-mapping-upload'
+    description = 'Plugin to automatically upload ProGuard mapping files to Bugfender'
+    tags = ['bugfender','mapping','logger','crash-report']
+
+    plugins {
+        uploadMappingPlugin {
+            // id is captured from java-gradle-plugin configuration
+            displayName = 'Bugfender Android plugin'
         }
     }
 }
