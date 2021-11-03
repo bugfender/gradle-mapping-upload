@@ -10,7 +10,7 @@ repositories {
 }
 
 group 'com.bugfender'
-version '1.0.1'
+version '1.0.2'
 
 compileKotlin {
     sourceCompatibility = JavaVersion.VERSION_1_8
