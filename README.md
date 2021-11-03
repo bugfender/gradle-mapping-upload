@@ -11,7 +11,7 @@ Add the plugin to your *app* `build.gradle` file and configure it with the Symbo
 
 ```
 plugins {
-    id "com.bugfender.upload-mapping" version "1.0.1"
+    id "com.bugfender.upload-mapping" version "1.0.2"
 }
 
 bugfender {
