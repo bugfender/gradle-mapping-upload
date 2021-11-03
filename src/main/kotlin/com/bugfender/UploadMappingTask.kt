@@ -78,7 +78,6 @@ abstract class UploadMappingTask : DefaultTask() {
             }
         } catch (exc: Exception) {
             this.logger.error("Error sending mapping file", exc)
-            throw GradleException("Error connecting to the server")
         }
     }
 }
