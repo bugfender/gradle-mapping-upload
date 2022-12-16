@@ -11,12 +11,16 @@ import org.gradle.api.GradleException
 import org.gradle.api.internal.provider.MissingValueException
 import org.gradle.api.tasks.Internal
 import org.gradle.api.tasks.TaskAction
-import java.lang.Exception
+import java.time.Duration
 
 abstract class UploadMappingTask : DefaultTask() {
     companion object {
         private val FILE_MIME_TYPE = "text/plain; charset=utf-8".toMediaType()
-        private val httpClient = OkHttpClient()
+        private val httpClient = OkHttpClient.Builder()
+          .connectTimeout(Duration.ofSeconds(30))
+          .readTimeout(Duration.ofSeconds(30))
+          .writeTimeout(Duration.ofSeconds(60))
+          .build()
         private lateinit var requestBuilder: Request.Builder
 
         internal fun constructor(
