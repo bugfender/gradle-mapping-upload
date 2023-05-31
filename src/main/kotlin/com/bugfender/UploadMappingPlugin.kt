@@ -80,7 +80,7 @@ abstract class UploadMappingPlugin : Plugin<Project> {
 
     // Add generated file to the Assets
     app.sourceSets.getByName(variant.name).assets.srcDir(
-      generateMappingUuidTask.flatMap { it.output }
+      project.files(generateMappingUuidTask.flatMap { task -> task.output})
     )
 
     return generateMappingUuidTask
