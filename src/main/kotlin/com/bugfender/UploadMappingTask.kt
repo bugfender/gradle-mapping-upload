@@ -17,9 +17,9 @@ abstract class UploadMappingTask : DefaultTask() {
     companion object {
         private val FILE_MIME_TYPE = "text/plain; charset=utf-8".toMediaType()
         private val httpClient = OkHttpClient.Builder()
-          .connectTimeout(Duration.ofSeconds(30))
-          .readTimeout(Duration.ofSeconds(30))
-          .writeTimeout(Duration.ofSeconds(60))
+          .connectTimeout(Duration.ofSeconds(600))
+          .readTimeout(Duration.ofSeconds(600))
+          .writeTimeout(Duration.ofSeconds(600))
           .build()
         private lateinit var requestBuilder: Request.Builder
 
