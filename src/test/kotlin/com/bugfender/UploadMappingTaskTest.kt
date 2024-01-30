@@ -7,6 +7,7 @@ import io.mockk.junit5.MockKExtension
 import io.mockk.mockk
 import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.MockWebServer
+import org.gradle.api.file.RegularFile
 import org.gradle.testfixtures.ProjectBuilder
 import org.junit.jupiter.api.Assertions.assertArrayEquals
 import org.junit.jupiter.api.Assertions.assertEquals
@@ -39,12 +40,18 @@ class UploadMappingTaskTest {
         println(url.toString())
         config.symbolicationURL(url.toString())
 
+        val mappingUidFile = File.createTempFile("mappingUidFile", "")
+        mappingUidFile.writeText("MAPPING_UID")
+        mappingUidFile.deleteOnExit()
+        val mappingUidFileProvider = project.providers.provider { RegularFile { mappingUidFile } }
+
         val task = project.tasks.register(
             "bfUploadMappingTest",
             UploadMappingTask::class.java,
-            UploadMappingTask.constructor(variant, config),
+            UploadMappingTask.constructor(variant, config, mappingUidFileProvider),
         ).get()
         task.upload()
+
 
         val req = webserver.takeRequest()
         assertEquals("POST", req.method)
@@ -63,18 +70,24 @@ class UploadMappingTaskTest {
 
             values[name] = s[1].dropLast(2)
         }
-        assertArrayEquals(arrayOf("build", "file", "version"), values.keys.sorted().toTypedArray())
+        assertArrayEquals(arrayOf("build", "file", "mappingUid", "version"), values.keys.sorted().toTypedArray())
         assertEquals("1.0-test", values["version"])
         assertEquals("1", values["build"])
         assertEquals("TESTFILECONTENT", values["file"])
+        assertEquals("MAPPING_UID", values["mappingUid"])
     }
 
     @Test
     fun missingsymbolicationToken(@MockK variant: ApplicationVariant) {
         val config = project.extensions.create("bugfender", UploadMappingPluginExtension::class.java)
 
+        val mappingUidFile = File.createTempFile("mappingUidFile", "")
+        mappingUidFile.writeText("MAPPING_UID")
+        mappingUidFile.deleteOnExit()
+
+        val mappingUidFileProvider = project.providers.provider { RegularFile { mappingUidFile } }
         val exc = assertThrows<Exception>("Should throw exception on missing API key") {
-            UploadMappingTask.constructor(variant, config)
+            UploadMappingTask.constructor(variant, config, mappingUidFileProvider)
         }
         assertEquals("Missing symbolicationToken in configuration", exc.message)
     }

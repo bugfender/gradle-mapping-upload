@@ -8,7 +8,11 @@ import okhttp3.Request
 import okhttp3.RequestBody.Companion.asRequestBody
 import org.gradle.api.DefaultTask
 import org.gradle.api.GradleException
+import org.gradle.api.file.RegularFile
+import org.gradle.api.file.RegularFileProperty
 import org.gradle.api.internal.provider.MissingValueException
+import org.gradle.api.provider.Provider
+import org.gradle.api.tasks.InputFile
 import org.gradle.api.tasks.Internal
 import org.gradle.api.tasks.TaskAction
 import java.time.Duration
@@ -25,7 +29,8 @@ abstract class UploadMappingTask : DefaultTask() {
 
         internal fun constructor(
             variant: ApplicationVariant,
-            config: UploadMappingPluginExtension
+            config: UploadMappingPluginExtension,
+            mappingUuidFile: Provider<RegularFile>
         ): UploadMappingTask.() -> Unit {
             if (!config.symbolicationToken.isPresent) {
                 throw Exception("Missing symbolicationToken in configuration")
@@ -38,9 +43,13 @@ abstract class UploadMappingTask : DefaultTask() {
 
             return {
                 this.variant = variant
+                this.mappingUuidFile.set(mappingUuidFile)
             }
         }
     }
+
+    @get:InputFile
+    abstract val mappingUuidFile: RegularFileProperty
 
     @Internal
     lateinit var variant: ApplicationVariant
@@ -60,11 +69,19 @@ abstract class UploadMappingTask : DefaultTask() {
         }
         val firstFile = files.first()
 
+        val mappingUuid = try {
+            this.mappingUuidFile.get().asFile.readText()
+        } catch (exc:Exception){
+            logger.error("Error reading mapping UID", exc)
+            return
+        }
+
         val reqBody = MultipartBody.Builder()
             .setType(MultipartBody.FORM)
             .addFormDataPart("version", this.variant.versionName)
             .addFormDataPart("build", this.variant.versionCode.toString())
             .addFormDataPart("file", firstFile.name, firstFile.asRequestBody(FILE_MIME_TYPE))
+            .addFormDataPart("mappingUid", mappingUuid)
             .build()
         val request = requestBuilder.post(reqBody).build()
         try {
