@@ -19,7 +19,7 @@ class UploadMappingPlugin : Plugin<Project> {
                     project.logger.debug("[Bugfender] Attempting to apply plugin to {}", variant.name)
 
                     if (!variant.buildType.isMinifyEnabled) {
-                        project.logger.lifecycle("[Bugfender] Not applying to {}: minification is disabled", variant.name)
+                        project.logger.debug("[Bugfender] Not applying to {}: minification is disabled", variant.name)
                         return@configureEach
                     }
 

@@ -1,11 +1,10 @@
 package com.bugfender
 
 import com.android.build.gradle.api.ApplicationVariant
-import okhttp3.MediaType.Companion.toMediaType
+import com.bugfender.okhttp3.ZipFileRequestBody
 import okhttp3.MultipartBody
 import okhttp3.OkHttpClient
 import okhttp3.Request
-import okhttp3.RequestBody.Companion.asRequestBody
 import org.gradle.api.DefaultTask
 import org.gradle.api.GradleException
 import org.gradle.api.internal.provider.MissingValueException
@@ -13,9 +12,9 @@ import org.gradle.api.tasks.Internal
 import org.gradle.api.tasks.TaskAction
 import java.time.Duration
 
+
 abstract class UploadMappingTask : DefaultTask() {
     companion object {
-        private val FILE_MIME_TYPE = "text/plain; charset=utf-8".toMediaType()
         private val httpClient = OkHttpClient.Builder()
           .connectTimeout(Duration.ofSeconds(600))
           .readTimeout(Duration.ofSeconds(600))
@@ -58,13 +57,12 @@ abstract class UploadMappingTask : DefaultTask() {
             this.logger.debug("No mapping files found for {}", this.name)
             return
         }
-        val firstFile = files.first()
 
         val reqBody = MultipartBody.Builder()
             .setType(MultipartBody.FORM)
             .addFormDataPart("version", this.variant.versionName)
             .addFormDataPart("build", this.variant.versionCode.toString())
-            .addFormDataPart("file", firstFile.name, firstFile.asRequestBody(FILE_MIME_TYPE))
+            .addFormDataPart("file", "gradle-mappings.zip", ZipFileRequestBody(files))
             .build()
         val request = requestBuilder.post(reqBody).build()
         try {

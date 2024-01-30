@@ -1,6 +1,6 @@
 plugins {
     id 'java-gradle-plugin'
-    id 'org.jetbrains.kotlin.jvm' version '1.5.30'
+    id 'org.jetbrains.kotlin.jvm' version '1.9.22'
     id "com.gradle.plugin-publish" version "0.16.0" // For publishing on https://plugins.gradle.org/ -> use publishPlugins task
     id 'maven-publish' // For publishing on local maven repository (for development purposes) -> use publishToMavenLocal task
 }
@@ -10,7 +10,7 @@ repositories {
 }
 
 group 'com.bugfender'
-version '1.1.2'
+version '1.2.0'
 
 compileKotlin {
     sourceCompatibility = JavaVersion.VERSION_1_8
@@ -25,12 +25,11 @@ repositories {
 dependencies {
     compileOnly "com.android.tools.build:gradle:7.0.2"
 
-    implementation 'org.jetbrains.kotlin:kotlin-stdlib:1.5.30'
-    implementation "com.squareup.okhttp3:okhttp:4.9.1"
+    implementation "com.squareup.okhttp3:okhttp:4.12.0"
 
     testImplementation "com.android.tools.build:gradle:7.0.2"
     testImplementation "io.mockk:mockk:1.12.0"
-    testImplementation "com.squareup.okhttp3:mockwebserver:4.9.1"
+    testImplementation "com.squareup.okhttp3:mockwebserver:4.12.0"
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.0'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.0'
 }
