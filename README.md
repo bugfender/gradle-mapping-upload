@@ -41,7 +41,7 @@ bugfender {
 }
 ```
 
-Note: in older project configurations, it's possible this file it's not under an `app` directory.
+Note: in older project configurations, it's possible this file is not under an `app` directory.
 
 ### Bugfender On-Premises
 
