@@ -66,7 +66,7 @@ class UploadMappingTaskTest {
         assertArrayEquals(arrayOf("build", "file", "version"), values.keys.sorted().toTypedArray())
         assertEquals("1.0-test", values["version"])
         assertEquals("1", values["build"])
-        assertEquals("TESTFILECONTENT", values["file"])
+        assert(values["file"]!!.startsWith("PK")) // zip file
     }
 
     @Test
