@@ -10,11 +10,15 @@ repositories {
 }
 
 group 'com.bugfender'
-version '1.2.0'
+version '1.3.0'
 
-compileKotlin {
-    sourceCompatibility = JavaVersion.VERSION_1_8
-    targetCompatibility = JavaVersion.VERSION_1_8
+java {
+    sourceCompatibility = JavaVersion.VERSION_11
+    targetCompatibility = JavaVersion.VERSION_11
+}
+
+tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).configureEach {
+    kotlinOptions.jvmTarget = '11'
 }
 
 repositories {
@@ -23,12 +27,11 @@ repositories {
 }
 
 dependencies {
-    compileOnly "com.android.tools.build:gradle:7.0.2"
+    compileOnly "com.android.tools.build:gradle-api:7.4.0"
 
     implementation "com.squareup.okhttp3:okhttp:4.12.0"
 
-    testImplementation "com.android.tools.build:gradle:7.0.2"
-    testImplementation "io.mockk:mockk:1.12.0"
+    testImplementation "com.android.tools.build:gradle-api:7.4.0"
     testImplementation "com.squareup.okhttp3:mockwebserver:4.12.0"
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.0'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.0'

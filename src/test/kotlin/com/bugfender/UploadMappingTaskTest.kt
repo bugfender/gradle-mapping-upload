@@ -1,58 +1,60 @@
 package com.bugfender
 
-import com.android.build.gradle.api.ApplicationVariant
-import io.mockk.every
-import io.mockk.impl.annotations.MockK
-import io.mockk.junit5.MockKExtension
-import io.mockk.mockk
 import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.MockWebServer
 import org.gradle.testfixtures.ProjectBuilder
 import org.junit.jupiter.api.Assertions.assertArrayEquals
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.assertThrows
-import org.junit.jupiter.api.extension.ExtendWith
 import java.io.File
 
-@ExtendWith(MockKExtension::class)
 class UploadMappingTaskTest {
     private val project = ProjectBuilder.builder().build()
 
     @Test
-    fun uploadMapping(@MockK variant: ApplicationVariant) {
+    fun uploadMapping() {
         val file = File.createTempFile("bfUploadMapping", "")
         file.writeText("TESTFILECONTENT")
         file.deleteOnExit()
-        every { variant.mappingFileProvider.get() } returns mockk(relaxed = true) {
-            every { files } returns setOf(file)
-        }
-        every { variant.versionName } returns "1.0-test"
-        every { variant.versionCode } returns 1
         val webserver = MockWebServer()
         webserver.enqueue(MockResponse())
         webserver.start()
-        val url = webserver.url("")
 
-        val config = project.extensions.create("bugfender", UploadMappingPluginExtension::class.java)
-        config.symbolicationToken("00009999111133332222444455556666")
-        println(url.toString())
-        config.symbolicationURL(url.toString())
+        val task = task("bfUploadMappingTest")
+        task.mappingFiles.setFrom(file)
+        task.symbolicationToken.set("00009999111133332222444455556666")
+        task.symbolicationURL.set(webserver.url("").toString())
+        task.versionName.set("1.0-test")
+        task.versionCode.set(1)
 
-        val task = project.tasks.register(
-            "bfUploadMappingTest",
-            UploadMappingTask::class.java,
-            UploadMappingTask.constructor(variant, config),
-        ).get()
         task.upload()
 
         val req = webserver.takeRequest()
         assertEquals("POST", req.method)
         assertEquals("/api/upload-symbols", req.path)
+        assertEquals("Bearer 00009999111133332222444455556666", req.getHeader("Authorization"))
         assertFormData(req.body.readUtf8())
 
         webserver.shutdown()
     }
+
+    @Test
+    fun skipsUploadWithoutMappingFiles() {
+        val webserver = MockWebServer()
+        webserver.start()
+
+        val task = task("bfUploadMappingEmpty")
+        task.symbolicationToken.set("00009999111133332222444455556666")
+        task.symbolicationURL.set(webserver.url("").toString())
+
+        task.upload()
+
+        assertEquals(0, webserver.requestCount)
+        webserver.shutdown()
+    }
+
+    private fun task(name: String) =
+        project.tasks.register(name, UploadMappingTask::class.java).get()
 
     private fun assertFormData(data: String) {
         val values = mutableMapOf<String, String>()
@@ -67,15 +69,5 @@ class UploadMappingTaskTest {
         assertEquals("1.0-test", values["version"])
         assertEquals("1", values["build"])
         assert(values["file"]!!.startsWith("PK")) // zip file
-    }
-
-    @Test
-    fun missingsymbolicationToken(@MockK variant: ApplicationVariant) {
-        val config = project.extensions.create("bugfender", UploadMappingPluginExtension::class.java)
-
-        val exc = assertThrows<Exception>("Should throw exception on missing API key") {
-            UploadMappingTask.constructor(variant, config)
-        }
-        assertEquals("Missing symbolicationToken in configuration", exc.message)
     }
 }
