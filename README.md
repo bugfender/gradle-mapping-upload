@@ -3,6 +3,10 @@ Bugfender Android Gradle Plugin
 
 Used to automatically upload ProGuard mapping files to [Bugfender](https://bugfender.com).
 
+## Requirements
+
+Android Gradle Plugin 7.4 or newer, including AGP 9 with the new DSL. If you are on an older AGP, use plugin version `1.2.0`.
+
 ## Usage
 
 Add the plugin to your *app* `build.gradle` file and configure it with the Symbols Upload Token, obtained from your Bugfender dashboard.
@@ -17,7 +21,7 @@ Add the Bugfender plugin to the `plugins` section and create a new `bugfender` s
 plugins {
     id("com.android.application")
     // you may have other plugins here
-    id("com.bugfender.upload-mapping") version "1.2.0"
+    id("com.bugfender.upload-mapping") version "1.3.0"
 }
 
 bugfender {
@@ -33,7 +37,7 @@ Add the Bugfender plugin to the `plugins` section and create a new `bugfender` s
 plugins {
     id "com.android.application"
     // you may have other plugins here
-    id "com.bugfender.upload-mapping" version "1.2.0"
+    id "com.bugfender.upload-mapping" version "1.3.0"
 }
 
 bugfender {
